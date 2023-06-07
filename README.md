@@ -1,5 +1,13 @@
-# AiRA 
+---
+title: AiRA
+emoji: 🏃
+colorFrom: purple
+colorTo: blue
+sdk: streamlit
+sdk_version: 1.21.0
+app_file: app.py
+pinned: false
+license: mit
+---
 
-### A.I. Research Assistant
-
-#### Knows literature
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
