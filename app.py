@@ -67,7 +67,7 @@ for mels, texts in tqdm(loader):
     references.extend(texts)
 
 data = pd.DataFrame(dict(hypothesis=hypotheses, reference=references))
-data
+st.dataframe(data)
 
 import jiwer
 from whisper.normalizers import EnglishTextNormalizer
@@ -76,9 +76,9 @@ normalizer = EnglishTextNormalizer()
 
 data["hypothesis_clean"] = [normalizer(text) for text in data["hypothesis"]]
 data["reference_clean"] = [normalizer(text) for text in data["reference"]]
-data
+st.dataframe(data)
 
 wer = jiwer.wer(list(data["reference_clean"]), list(data["hypothesis_clean"]))
 
-print(f"WER: {wer * 100:.2f} %")
+st.write(f"WER: {wer * 100:.2f} %")
 
