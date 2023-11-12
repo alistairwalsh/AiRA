@@ -1,5 +1,6 @@
 git+https://github.com/openai/whisper.git
 jiwer
+pytorch
 torch 
 torchvision 
 torchaudio
