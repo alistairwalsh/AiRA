@@ -4,3 +4,4 @@ streamlit
 openai
 langchain
 streamlit-authenticator
+streamlit-option-menu

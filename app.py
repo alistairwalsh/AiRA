@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit_authenticator as stauth
 from langchain.llms import OpenAI
 
 st.title('🦜🔗 Quickstart App')
