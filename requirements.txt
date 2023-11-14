@@ -1,5 +1,5 @@
 git+https://github.com/openai/whisper.git
-jiwer
-torch 
-torchvision 
-torchaudio
+tiktoken
+streamlit
+openai
+langchain
