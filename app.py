@@ -1,10 +1,11 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from langchain.llms import OpenAI
+from streamlit_option_menu import option_menu
 
 st.title('🦜🔗 Quickstart App')
 
-openai_api_key = st.sidebar.text_input('OpenAI API Key')
+#openai_api_key = st.sidebar.text_input('OpenAI API Key')
 
 def generate_response(input_text):
   llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
@@ -17,3 +18,10 @@ with st.form('my_form'):
     st.warning('Please enter your OpenAI API key!', icon='⚠')
   if submitted and openai_api_key.startswith('sk-'):
     generate_response(text)
+
+
+
+with st.sidebar:
+    selected = option_menu("Main Menu", ["Home", 'Settings'], 
+        icons=['house', 'gear'], menu_icon="cast", default_index=1)
+    selected
