@@ -22,6 +22,7 @@ with st.form('my_form'):
 
 
 with st.sidebar:
+    openai_api_key = text_input('OpenAI API Key')
     selected = option_menu("Main Menu", ["Home", 'Settings'], 
         icons=['house', 'gear'], menu_icon="cast", default_index=1)
     selected
