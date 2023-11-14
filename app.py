@@ -1,28 +1,47 @@
-import streamlit as st
-import streamlit_authenticator as stauth
-from langchain.llms import OpenAI
-from streamlit_option_menu import option_menu
+from langchain.chains import LLMMathChain
+from langchain.llms.openai import OpenAI
+from langchain.chat_models import ChatOpenAI
+from langchain.utilities import SerpAPIWrapper
+from langchain.agents import initialize_agent, Tool, AgentExecutor
+import os
+import chainlit as cl
 
-st.title('🦜🔗 Quickstart App')
-with st.sidebar:
-    openai_api_key = st.text_input('OpenAI API Key')
-    selected = option_menu("Main Menu", ["Home", 'Settings'], 
-        icons=['house', 'gear'], menu_icon="cast", default_index=1)
-    selected
+os.environ["OPENAI_API_KEY"] = "OPENAI_API_KEY"
+os.environ["SERPAPI_API_KEY"] = "SERPAPI_API_KEY"
 
-#openai_api_key = st.sidebar.text_input('OpenAI API Key')
 
-def generate_response(input_text):
-  llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
-  st.info(llm(input_text))
+@cl.on_chat_start
+def start():
+    llm = ChatOpenAI(temperature=0, streaming=True)
+    llm1 = OpenAI(temperature=0, streaming=True)
+    search = SerpAPIWrapper()
+    llm_math_chain = LLMMathChain.from_llm(llm=llm, verbose=True)
 
-with st.form('my_form'):
-  text = st.text_area('Enter text:', 'What are the three key pieces of advice for learning how to code?')
-  submitted = st.form_submit_button('Submit')
-  if not openai_api_key.startswith('sk-'):
-    st.warning('Please enter your OpenAI API key!', icon='⚠')
-  if submitted and openai_api_key.startswith('sk-'):
-    generate_response(text)
+    tools = [
+        Tool(
+            name="Search",
+            func=search.run,
+            description="useful for when you need to answer questions about current events. You should ask targeted questions",
+        ),
+        Tool(
+            name="Calculator",
+            func=llm_math_chain.run,
+            description="useful for when you need to answer questions about math",
+        ),
+    ]
+    agent = initialize_agent(
+        tools, llm1, agent="chat-zero-shot-react-description", verbose=True
+    )
+    cl.user_session.set("agent", agent)
+
+
+@cl.on_message
+async def main(message: cl.Message):
+    agent = cl.user_session.get("agent")  # type: AgentExecutor
+    cb = cl.LangchainCallbackHandler(stream_final_answer=True)
+
+    await cl.make_async(agent.run)(message.content, callbacks=[cb])
+
 
 
 
